@@ -1,17 +1,13 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.24;
+import "./IJoKenPo.sol";
+import "./JKPLibrary.sol";
 
-contract JoKenPo {
-    enum Choice {
-        None,
-        Rock,
-        Paper,
-        Scissors
-    }
+contract JoKenPo is IJoKenPo {
     address private _player1;
     address payable private immutable _owner;
-    Choice private _player1Choice;
-    string private _result;
+    JKPLibrary.Choice private _player1Choice = JKPLibrary.Choice.None;
+    string private _result = "";
     uint256 private _bid = 0.001 ether;
     uint8 private _commission = 10;
     mapping(address => uint128) public winners;
@@ -70,31 +66,40 @@ contract JoKenPo {
 
         _result = newResult;
         _player1 = address(0);
-        _player1Choice = Choice.None;
+        _player1Choice = JKPLibrary.Choice.None;
     }
 
-    function play(Choice _choice) external payable {
-        require(msg.sender != _owner, "Owner can not play");
-        require(msg.sender != _player1, "Player 1 can not play with himself");
-        require(_choice != Choice.None, "Invalid choice");
+    function play(JKPLibrary.Choice _choice) external payable {
+        require(tx.origin != _owner, "Owner can not play");
+        require(tx.origin != _player1, "Player 1 can not play with himself");
+        require(_choice != JKPLibrary.Choice.None, "Invalid choice");
         require(msg.value >= _bid, "Invalid bid");
 
-        if (_player1Choice == Choice.None) {
-            _player1 = msg.sender;
+        if (_player1Choice == JKPLibrary.Choice.None) {
+            _player1 = tx.origin;
             _player1Choice = _choice;
             _result = "Player 1 plays waiting player 2";
             return;
         }
 
-        if (_player1Choice == Choice.Rock && _choice == Choice.Scissors) {
+        if (
+            _player1Choice == JKPLibrary.Choice.Rock &&
+            _choice == JKPLibrary.Choice.Scissors
+        ) {
             finishGame("Player 1 Wins", _player1);
             return;
         }
-        if (_player1Choice == Choice.Scissors && _choice == Choice.Paper) {
+        if (
+            _player1Choice == JKPLibrary.Choice.Scissors &&
+            _choice == JKPLibrary.Choice.Paper
+        ) {
             finishGame("Player 1 Wins", _player1);
             return;
         }
-        if (_player1Choice == Choice.Paper && _choice == Choice.Rock) {
+        if (
+            _player1Choice == JKPLibrary.Choice.Paper &&
+            _choice == JKPLibrary.Choice.Rock
+        ) {
             finishGame("Player 1 Wins", _player1);
             return;
         }
@@ -102,11 +107,11 @@ contract JoKenPo {
             _result = "Draw Game, the prize was doubled";
             return;
         }
-        finishGame("Player 2 Wins", msg.sender);
+        finishGame("Player 2 Wins", tx.origin);
     }
 
     modifier restricted() {
-        require(msg.sender == _owner, "You do not have permission");
+        require(tx.origin == _owner, "You do not have permission");
         _;
     }
 }
