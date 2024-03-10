@@ -2,8 +2,6 @@
 pragma solidity ^0.8.24;
 import "./IJoKenPo.sol";
 import "./JKPLibrary.sol";
-//import console.sol
-import "hardhat/console.sol";
 
 contract JoKenPo is IJoKenPo {
     address private _player1;
