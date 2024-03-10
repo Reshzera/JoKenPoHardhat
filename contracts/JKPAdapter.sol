@@ -6,6 +6,11 @@ import "./JKPLibrary.sol";
 contract JKPAdapter {
     IJoKenPo private joKenPo;
     address public immutable owner;
+    event Player(
+        address indexed player,
+        JKPLibrary.Choice choice,
+        string result
+    );
 
     constructor() {
         owner = msg.sender;
@@ -29,7 +34,8 @@ contract JKPAdapter {
 
     //JKP Functions
     function play(JKPLibrary.Choice _choice) external payable upgraded {
-        return joKenPo.play{value: msg.value}(_choice);
+        string memory result = joKenPo.play{value: msg.value}(_choice);
+        emit Player(msg.sender, _choice, result);
     }
 
     function getResult() external view upgraded returns (string memory) {

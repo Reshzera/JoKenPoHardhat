@@ -78,7 +78,9 @@ contract JoKenPo is IJoKenPo {
         _player1Choice = JKPLibrary.Choice.None;
     }
 
-    function play(JKPLibrary.Choice _choice) external payable {
+    function play(
+        JKPLibrary.Choice _choice
+    ) external payable returns (string memory) {
         require(tx.origin != _owner, "Owner can not play");
         require(tx.origin != _player1, "Player 1 can not play with himself");
         require(_choice != JKPLibrary.Choice.None, "Invalid choice");
@@ -88,7 +90,7 @@ contract JoKenPo is IJoKenPo {
             _player1 = tx.origin;
             _player1Choice = _choice;
             _result = "Player 1 plays waiting player 2";
-            return;
+            return _result;
         }
 
         if (
@@ -96,27 +98,28 @@ contract JoKenPo is IJoKenPo {
             _choice == JKPLibrary.Choice.Scissors
         ) {
             finishGame("Player 1 Wins", _player1);
-            return;
+            return _result;
         }
         if (
             _player1Choice == JKPLibrary.Choice.Scissors &&
             _choice == JKPLibrary.Choice.Paper
         ) {
             finishGame("Player 1 Wins", _player1);
-            return;
+            return _result;
         }
         if (
             _player1Choice == JKPLibrary.Choice.Paper &&
             _choice == JKPLibrary.Choice.Rock
         ) {
             finishGame("Player 1 Wins", _player1);
-            return;
+            return _result;
         }
         if (_player1Choice == _choice) {
             _result = "Draw Game, the prize was doubled";
-            return;
+            return _result;
         }
         finishGame("Player 2 Wins", tx.origin);
+        return _result;
     }
 
     modifier restricted() {

@@ -15,5 +15,7 @@ interface IJoKenPo {
 
     function getWinners() external view returns (JKPLibrary.Player[] memory);
 
-    function play(JKPLibrary.Choice _choice) external payable;
+    function play(
+        JKPLibrary.Choice _choice
+    ) external payable returns (string memory);
 }
