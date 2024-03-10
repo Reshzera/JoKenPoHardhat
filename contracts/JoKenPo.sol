@@ -2,6 +2,8 @@
 pragma solidity ^0.8.24;
 import "./IJoKenPo.sol";
 import "./JKPLibrary.sol";
+//import console.sol
+import "hardhat/console.sol";
 
 contract JoKenPo is IJoKenPo {
     address private _player1;
@@ -10,7 +12,7 @@ contract JoKenPo is IJoKenPo {
     string private _result = "";
     uint256 private _bid = 0.001 ether;
     uint8 private _commission = 10;
-    mapping(address => uint128) public winners;
+    JKPLibrary.Player[] private _winners;
 
     constructor() {
         _owner = payable(msg.sender);
@@ -44,12 +46,19 @@ contract JoKenPo is IJoKenPo {
         return _result;
     }
 
-    function updateWinner(address winner) private {
-        if (winners[winner] != 0) {
-            winners[winner]++;
-            return;
+    function updateWinner(address _winner, uint256 _earning) private {
+        for (uint i = 0; i < _winners.length; i++) {
+            if (_winners[i].playerAddress == _winner) {
+                _winners[i].totalWins++;
+                _winners[i].totalEarnings += _earning;
+                return;
+            }
         }
-        winners[winner] = 1;
+        _winners.push(JKPLibrary.Player(_winner, _earning, 1));
+    }
+
+    function getWinners() external view returns (JKPLibrary.Player[] memory) {
+        return _winners;
     }
 
     function finishGame(
@@ -57,12 +66,12 @@ contract JoKenPo is IJoKenPo {
         address winnerAddress
     ) private {
         address contractAddress = address(this);
-        payable(winnerAddress).transfer(
-            (contractAddress.balance / 100) * (100 - _commission)
-        );
+        uint256 toPlayer = (contractAddress.balance / 100) *
+            (100 - _commission);
+        payable(winnerAddress).transfer(toPlayer);
         _owner.transfer(contractAddress.balance);
 
-        updateWinner(winnerAddress);
+        updateWinner(winnerAddress, toPlayer);
 
         _result = newResult;
         _player1 = address(0);

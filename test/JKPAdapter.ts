@@ -139,4 +139,17 @@ describe("JKPAdapter", function () {
       "Contract is upgrading"
     );
   });
+
+  it("Should get winners", async function () {
+    const { jkpAdapter, joKenPo } = await loadFixture(deployFixture);
+    await jkpAdapter.upgradeImplementation(joKenPo);
+    const winners = await jkpAdapter.getWinners();
+    expect(winners.length).to.equal(0);
+  });
+  it("Should NOT get winners (NO CONTRACT)", async function () {
+    const { jkpAdapter } = await loadFixture(deployFixture);
+    await expect(jkpAdapter.getWinners()).to.be.revertedWith(
+      "Contract is upgrading"
+    );
+  });
 });

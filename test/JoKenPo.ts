@@ -244,9 +244,16 @@ describe("JoKenPo", function () {
       value: DEFAULT_BID,
     });
     //winners is mappging
-    const player1Wins = await joKenPo.winners(player1.address);
-
+    const totalPlayersWins = await joKenPo.getWinners();
+    const player1Wins = totalPlayersWins.find(
+      (player) => player[0] === player1.address
+    )?.[2];
+    const player1Earnings = totalPlayersWins.find(
+      (player) => player[0] === player1.address
+    )?.[1];
+    const expectedEarnings = DEFAULT_BID * 2n - (DEFAULT_BID * 2n * 10n) / 100n;
     expect(player1Wins).to.equal(1);
+    expect(player1Earnings).to.equal(expectedEarnings);
 
     await player1Instance.play(GameOptions.ROCK, {
       value: DEFAULT_BID,
@@ -256,8 +263,17 @@ describe("JoKenPo", function () {
       value: DEFAULT_BID,
     });
 
-    const player1Wins2 = await joKenPo.winners(player1.address);
+    const totalPlayersWins2 = await joKenPo.getWinners();
+    const player1Wins2 = totalPlayersWins2.find(
+      (player) => player[0] === player1.address
+    )?.[2];
+    const player1Earnings2 = totalPlayersWins2.find(
+      (player) => player[0] === player1.address
+    )?.[1];
+    const expectedEarnings2 =
+      expectedEarnings + DEFAULT_BID * 2n - (DEFAULT_BID * 2n * 10n) / 100n;
 
     expect(player1Wins2).to.equal(2);
+    expect(player1Earnings2).to.equal(expectedEarnings2);
   });
 });

@@ -52,6 +52,15 @@ contract JKPAdapter {
         return joKenPo.setBid(_newBid);
     }
 
+    function getWinners()
+        external
+        view
+        upgraded
+        returns (JKPLibrary.Player[] memory)
+    {
+        return joKenPo.getWinners();
+    }
+
     modifier upgraded() {
         require(address(joKenPo) != address(0), "Contract is upgrading");
         _;

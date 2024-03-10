@@ -8,4 +8,10 @@ library JKPLibrary {
         Paper,
         Scissors
     }
+
+    struct Player {
+        address playerAddress;
+        uint256 totalEarnings;
+        uint128 totalWins;
+    }
 }
