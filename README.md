@@ -19,13 +19,13 @@ Welcome to the JoKenPo Ethereum blockchain game repository. This project uses Ha
 
 This is the main contract for the game. It handles game initialization, player interactions, and determining the outcome of the game.
 
-https://sepolia.etherscan.io/address/0x1B7782229Ce7fc38E447448d4BAd7Bc2357dfc07#code
+https://sepolia.etherscan.io/address/0x4fc82edAEb0281fCd0e4B00aC61AA12F2a8deAAE#code
 
 ### JKPAdapter.sol
 
 The adapter contract is an additional layer that players interact with. It forwards calls to the main JoKenPo contract and can be used to upgrade the game logic while keeping the same interface.
 
-https://sepolia.etherscan.io/address/0xd615907a3aee90b00a739ee81629dEBc9075EF0d#code
+https://sepolia.etherscan.io/address/0xe600C8C70057Bb294a01b1B7Fe054F274e1545D6#code
 
 ### JKPLibrary.sol
 
